@@ -78,7 +78,36 @@ header p{color:var(--text-secondary);font-size:15px}
   .form-panel{padding:16px}
   .api-key-bar{flex-direction:column;align-items:stretch}
   .api-key-bar input{min-width:auto}
+  .pro-grid{grid-template-columns:1fr}
 }
+
+/* ========== Pro Section ========== */
+.pro-section{margin-top:36px;padding-top:28px;border-top:1.5px dashed var(--border)}
+.pro-title{font-size:18px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.pro-badge{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px}
+.pro-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pro-card{position:relative;background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:24px 18px;text-align:center;cursor:pointer;transition:all .2s;overflow:hidden;min-height:160px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.pro-card:hover{border-color:var(--primary-light);transform:translateY(-2px);box-shadow:var(--shadow)}
+.pro-card .pro-emoji{font-size:36px;margin-bottom:10px;display:block}
+.pro-card .pro-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.pro-card .pro-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.pro-card-overlay{position:absolute;inset:0;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);background:rgba(255,255,255,.55);display:flex;justify-content:center;align-items:center;z-index:2;transition:background .2s}
+.pro-card:hover .pro-card-overlay{background:rgba(255,255,255,.45)}
+.pro-card-overlay .lock{font-size:36px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.12))}
+
+/* Pro Upgrade Modal */
+.pro-modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.pro-modal-backdrop.show{display:flex;animation:fadeIn .25s}
+.pro-modal{background:var(--card);border-radius:var(--radius);padding:32px 28px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:fadeIn .3s}
+.pro-modal h2{font-size:22px;margin-bottom:6px;background:linear-gradient(135deg,var(--primary),#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pro-modal .modal-subtitle{color:var(--text-secondary);font-size:14px;margin-bottom:20px}
+.pro-modal .feature-list{text-align:left;margin:0 auto 24px;max-width:300px}
+.pro-modal .feature-list li{font-size:14px;color:var(--text);padding:6px 0;list-style:none;display:flex;align-items:center;gap:8px}
+.pro-modal .feature-list li::before{content:'✅';font-size:14px}
+.pro-modal .upgrade-btn{display:inline-block;width:100%;padding:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;font-family:inherit}
+.pro-modal .upgrade-btn:hover{opacity:.9;transform:translateY(-1px)}
+.pro-modal .maybe-later{display:block;margin-top:14px;background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:13px;font-family:inherit;padding:6px}
+.pro-modal .maybe-later:hover{color:var(--text)}
 </style>
 </head>
 <body>
@@ -119,6 +148,43 @@ header p{color:var(--text-secondary);font-size:15px}
       <button class="clear-history" onclick="clearHistory()">\u6e05\u7a7a</button>
     </div>
     <div id="historyList"></div>
+  </div>
+
+  <!-- Pro Features Section -->
+  <div class="pro-section">
+    <div class="pro-title">
+      <span>🚀 高级功能</span>
+      <span class="pro-badge">PRO</span>
+    </div>
+    <div class="pro-grid">
+      <div class="pro-card" onclick="showProModal()">
+        <span class="pro-emoji">🌍</span>
+        <div class="pro-name">多语言翻译</div>
+        <div class="pro-desc">支持英/日/韩/法/德/西等10+语言互译</div>
+        <div class="pro-card-overlay"><span class="lock">🔒</span></div>
+      </div>
+      <div class="pro-card" onclick="showProModal()">
+        <span class="pro-emoji">🎭</span>
+        <div class="pro-name">语气调整</div>
+        <div class="pro-desc">正式/友好/专业/幽默等多种语气风格切换</div>
+        <div class="pro-card-overlay"><span class="lock">🔒</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pro Upgrade Modal -->
+<div class="pro-modal-backdrop" id="proModal">
+  <div class="pro-modal">
+    <h2>✨ Upgrade to Pro</h2>
+    <p class="modal-subtitle">解锁全部高级功能，让邮件更专业</p>
+    <ul class="feature-list">
+      <li>10+ 语言互译（英/日/韩/法/德/西...）</li>
+      <li>多种语气风格一键切换</li>
+      <li>持续更新更多 Pro 功能</li>
+    </ul>
+    <a class="upgrade-btn" href="https://feifeicch.gumroad.com/ai-email-writer" target="_blank">Upgrade to Pro — $9</a>
+    <button class="maybe-later" onclick="hideProModal()">Maybe later</button>
   </div>
 </div>
 
@@ -547,6 +613,17 @@ function escapeHtml(str) {
 function escapeForAttr(str) {
   return (str || '').replace(/'/g, "\\'").replace(/\n/g, '\\n');
 }
+
+// ========== Pro Modal ==========
+function showProModal() {
+  document.getElementById('proModal').classList.add('show');
+}
+function hideProModal() {
+  document.getElementById('proModal').classList.remove('show');
+}
+document.getElementById('proModal').addEventListener('click', function(e) {
+  if (e.target === this) hideProModal();
+});
 
 // ========== Start ==========
 init();
